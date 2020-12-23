@@ -1,0 +1,43 @@
+sudo systemctl status ufw
+
+How do I open tcp port # 80 and 443?
+The service specific syntax is as follows to open http and https service ports:
+-------------------------------------------------------------------------------
+sudo ufw allow http
+sudo ufw allow https
+OR
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+Advanced examples for opening TCP and UDP ports
+-------------------------------------------------------------------------------
+To allow IP address 192.168.1.10 access to port 22 for all protocols
+sudo ufw allow from 192.168.1.10 to any port 22
+
+Open port 74.86.26.69:443 (SSL 443 nginx/apache/lighttpd server) for all, enter:
+--------------------------------------------------------------------------------
+sudo ufw allow from any to 74.86.26.69 port 443 proto tcp
+
+To allows subnet 192.168.1.0/24 to Sabma services, enter:
+ufw allow from 192.168.1.0/24 to any app Samba
+
+You can find service info as follows:
+-------------------------------------------------------------------------------
+sudo ufw app list
+
+Denying/blocking port access
+We can add deny rule as follows to block all access to port 25:
+-------------------------------------------------------------------------------
+sudo ufw deny 25
+sudo ufw deny 25/tcp comment 'Block access to smptd by default'
+
+How to delete ufw rules
+
+We can list firewall rules using the following syntax on Ubuntu Linux:
+-------------------------------------------------------------------------------
+sudo ufw status
+sudo ufw numbered
+
+Once we found firewall rule number delete by that number:
+-------------------------------------------------------------------------------
+sudo ufw delete 5
