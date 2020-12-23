@@ -1,0 +1,16 @@
+Start Stop und Status
+---------------------------------------------------
+sudo Systemctl Enable firawalld
+sudo Systemctl Diseable firawalld
+
+sudo systemctl status firewalld
+sudo Systemctl start firawalld
+sudo Systemctl stop firawalld
+
+sudo systemctl is-active firewalld
+sudo systemctl is-enabled-enabled firewalld
+
+Open Port
+--------------------------------------------------
+firewall-cmd --permanent --add-port=8080/tcp
+firewall-cmd --reload
