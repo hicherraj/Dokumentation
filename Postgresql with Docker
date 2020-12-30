@@ -1,0 +1,20 @@
+# Create a Postgres docker container:
+docker run --name demo -d -p 5432::5432 -e POSTGRES_PASSWORD=password postgres
+
+# Connect and run some queries:
+docker exec -it demo psql -U postgres
+create database demo;
+\c demo
+create table demo_tb(id int);
+insert into demotb(id) values (1000);
+\dt
+select * from demo_tb;
+\q
+
+# Remove container
+docker rm -f postgesql
+
+# Automate - run scripts using docker cli
+docker run --name demo -v "$PWD"/:/opt/demo/ -e POSTGRES_PASSWORD=password -d postgres
+docker exec -it demo psql -U postgrea -c "CREATE DATABASE demo_db;"
+docker exec -it demo psql -U postgrea -f /opt/demo"script_demo.sql
