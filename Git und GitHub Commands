@@ -1,0 +1,37 @@
+--[ Initialisierung ]---------------------------------------
+git init
+git config --global user.name "xxxxxxx"
+git config --global user.email "xxxxxx@xxxxxx.xx"
+git remote add origin (url from GitHub)
+
+--[ Rotine ]------------------------------------------------
+git add .
+git commit -m "init commit"
+git log
+git push origin main
+
+--[ New User ]----------------------------------------------
+- Settings > Collaborators (user)
+
+--[ Projekt Clonen ]----------------------------------------
+git clone (url from GitHub)
+git pull origin main
+git reset --hard
+
+--[ Branch ]------------------------------------------------
+git branch
+git checkout -b newbranch
+git add .
+git commit -m ""
+git log
+git push origin newbranch
+
+--[ Merge ]-------------------------------------------------
+git merge main
+
+--[ Sehr wichtig Commands ]---------------------------------
+git remote add origin (url from GitHub)
+git push origin main
+git clone (url from GitHub)
+git pull origin main
+git checkout -b newbranch
