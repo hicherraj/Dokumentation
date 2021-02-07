@@ -1,0 +1,407 @@
+# Erste Schritte mit der Windows PowerShell
+
+Start-Transcript C:\temp\Transcript.txt
+Get-Item C:\temp\Transcript.txt
+
+Get-Service | select -First 20 | ft -AutoSize
+Get-Service -Name wuauserv
+
+Get-PSDrive
+
+cd Function
+Get-Content
+
+# Cmdlets und Funktionen in der Windows PowerShell
+
+# Cmdlets und Funktionen
+
+# Befehle finden
+Get-Command -Verb Get -Noun Service
+Get-Command | Sort-Object Noun
+Get-Command *-Service
+Get-Command -Module NetAdapter
+
+# Kommando-Aufrufvarianten
+Get-Service -Name wuauserv -ComputerName .
+Get-Service wuauserv
+Get-Service -?
+
+# Hilfe aktualisieren
+Get-Service -?
+Get-Help Get-Service -Full
+Update-Help * -Force
+Get-Service -Displayname "*network*"
+
+# Hilfe aufrufen
+Get-Service -?
+GEt-Help Get-Service -Examples
+GEt-Help Get-Service -Full
+
+# Syntax
+Get-Service -Name wuauserv, dnscache, winrm
+Get-EventLog -?
+Get-EventLog -LogName System | Select -First 20 | ft -AutoSize
+
+# Aliase
+Get-ChildItem 
+dir -Recurse
+Get-Alias
+Set-Alias -Name gs -Value Get-Service
+
+# Cmdlets verketten
+Get-Process 
+Get-Process | Sort-Object cpu | Select -First 20
+Get-Process | Sort-Object cpu | Select-Object name, npm, ws | Export-Csv C:\temp\ausgabe.csv
+notepad C:\temp\ausgabe.csv
+Stop-Process -Name notepad
+
+# XML, CSV-Strukturen verarbeiten
+Get-Service | Export-Csv ergebnis.csv
+Import-Csv .\ergebnis.csv
+Import-Csv .\ergebnis.csv | Get-Member
+
+Get-Service | Export-Clixml .\ergebnis.xml
+notepad .\ergebnis.xml
+Import-Clixml .\ergebnis.xml
+
+notepad personen.csv
+Import-Csv .\personen.csv
+Import-Csv .\personen.csv | Where-Object { $_.Abteilung -eq "IT" }
+Import-Csv .\personen.csv -Delimiter ";"
+
+# Wichtige Ausgabe-Cmdlets
+Get-Service | Select-Object Name, CanStop, MachineName
+Get-Service | Format-Table Name, CanStop, MachineName -AutoSize
+Get-Service | Select-Object Name, CanStop, MachineName | Export-Csv select.csv
+Get-Service | ft Name, CanStop, MachineName | Export-Csv format.csv
+Get-Process | Out-GridView
+Get-Process | Out-GridView -PassThru | Stop-Process
+
+# Snap-Ins und Module
+Get-PSSnapin
+Get-PSSnapin -Registered
+Add-PSSnapin *SQL*
+Get-Command -Name *SQL*
+Get-Module
+Get-Module -ListAvailable
+
+Import-Module ServerManager
+Get-WindowsFeature
+
+
+# Datum und Uhrzeit
+[DateTime]"05/03/21" | Get-Member 
+[DateTime]"12/01/80 12:13:00 AM"
+[DateTime]"05/03/21 12:13:00 AM"
+Get-Date
+(Get-Date).AddDays(30)
+
+Get-EventLog -?
+Get-EventLog -LogName System -After ((Get-Date).AddDays(-1)) | Select -First 10
+
+# Klassen und Objekt in der Windows PowerShell
+
+# Klassen und Objekte
+Get-Service
+Get-Service| Get-Member
+Get-Service | Select-Object Name, CanStop, MachineName
+Get-Service | Select-Object *
+
+# Punktnotation
+Get-Service| Get-Member 
+(Get-Service wuauserv).Status
+(Get-Service wuauserv).Start()
+(Get-Service wuauserv).Stop()
+
+Get-Service | Measure-Object 
+
+dir C:\Windows | Measure-Object 
+dir C:\Windows | Measure-Object -Property Length -Sum
+(dir C:\Windows | Measure-Object -Property Length -Sum).Sum / 1GB
+Get-Service | Where-Object { $_.Status -eq "Stopped" } | ft -AutoSize
+"Hallo PowerShell" | Get-Member
+"Hallo PowerShell".ToLower()
+"Hallo PowerShell".Substring(0,5)
+
+# Objekte suchen
+Get-Service
+Get-Service | Where-Object { $_.Status -eq "Running" }
+Get-Service | Where-Object Status -eq "Running"
+Get-Service | Where-Object { $_.Status -eq "Running" -and $_.CanStop -eq $true } | select -First 10
+ 
+dir C:\Windows | Where-Object { $_.Length -gt 100KB }
+dir C:\Windows | Where { $_.Length -gt 100KB }
+dir C:\Windows | ? { $_.Length -gt 100KB }
+
+# Objekte mit einer Schleife verarbeiten
+"London","Paris","Wien","Rom" | foreach { "Europa Hauptstadt $_" }
+"London","Paris","Wien","Rom" | foreach { New-Item -ItemType Directory -Path $_ }
+
+# PowerShell-Language
+
+# Variablen
+$server = "London"
+$server = 33
+$server = Get-Service
+
+[DateTime]$datum = "03/05/20"
+$vorname = "hicham"
+$nachname = "cherraj"
+
+"Morgen $vorname $nachname"
+'Pass$$word'
+
+# Operatoren
+# -eq   ==
+# -gt   >
+# -ge   >=
+# -lt   <
+# -le   <=
+# -ne   <>, !=
+# -like  *, ?
+# -match Vergleich mit regulären Ausdrücken
+
+"c:\temp" -like "*\"
+
+# Werte abfragen
+$x = Read-Host "Zahl eingeben: "
+$y = Read-Host "Zahl eingeben: "
+if ($x -gt $y)
+{
+    "$x ist grosser als $y"
+} 
+else 
+{
+    "$x ist kleiner als $y"
+}
+
+switch ($x)
+{
+    'value1' {}
+    {$_ -in 'A','B','C'} {}
+    'value3' {}
+    Default {}
+}
+
+# Prozesse wiederholen
+1..10 | foreach { $_ }
+
+while ($x -gt 0)
+{
+    
+}
+
+do
+{
+    
+}
+until ($x -gt 0)
+
+do
+{
+    
+}
+while ($x -gt 0)
+
+for ($i = 1; $i -lt 99; $i++)
+{ 
+    
+}
+
+foreach ($item in $collection)
+{
+    
+}
+
+
+# Fehler erkennen und behandeln
+$?
+$Error[0]
+$ErrorActionPreference
+
+try
+{
+    1/0
+}
+catch [DivideByZeroException]
+{
+    Write-Host "Ausnahme: Division durch Null"
+}
+catch [System.Net.WebException],[System.Exception]
+{
+    Write-Host "Weitere Ausnahme"
+}
+finally
+{
+    Write-Host "Bereinigung wird ausgeführt..."
+}
+
+# Prozesse automatisieren
+
+# Benutzerdefinierte Funktionen
+function Get-Error ($LogName)
+{
+    Get-EventLog -LogName $LogName -EntryType Error -After (Get-Date).AddDays(-1)
+}
+
+function sum 
+{
+    $s = 0
+    $Input | foreach { $s = $s + $_.Length }
+    $s
+}
+dir C:\Windows\*.log | sum
+
+# Benutzerdefinierte Filter
+filter Start-Backup
+{
+    Copy-Item -Path $_ -Destination "c:\Backup"
+}
+dir C:\Windows\*.log 
+dir C:\Windows\*.log | Start-Backup
+dir C:\Backup
+
+# Erweiterte Funktionen
+function MwSt([Parameter(Mandatory = $True)][Double]$Beetrag, [Double]$Satz=19)
+{
+    $Beetrag / 100 * $Satz
+}
+
+function MwSt
+{
+    param([Parameter(Mandatory = $True)]
+          [Double]$Beetrag, 
+          
+          [Double]$Satz=19)
+    $Beetrag / 100 * $Satz
+}
+
+# Skript entwickeln
+
+# Skript ausführen
+# Restricted   AllSigned  RemoteSigned  Unrestricted
+Get-ExecutionPolicy
+Set-ExecutionPolicy Unrestricted
+c:\hallo.ps1
+powershell.exe -file "c:\hallo.ps1"
+
+# PowerShell-Profile
+New-Item -Path C:\Users\HCherraj\Documents\WindowsPowerShell\profile.ps1 -ItemType file
+New-Item -Path C:\Users\HCherraj\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1 -ItemType file
+New-Item -Path C:\Users\HCherraj\Documents\WindowsPowerShell\Microsoft.PowerShellISE_profile.ps1 -ItemType file
+
+# Administration
+
+# PowerShell-Remote-Verwaltung
+Enable-PSRemoting
+Invoke-Command -ComputerName DC1, DC2, DC3  -ScriptBlock { Get-Service wuauserv }
+
+# Windows Server Manager
+Import-Module ServerManager
+Get-Command -Module ServerManager
+Get-WindowsFeature
+Get-WindowsFeature | Select-Object *
+Get-WindowsFeature | Where-Object { $_.Installed -eq $true }
+Add-WindowsFeature Web-Ftp-Server
+Add-WindowsFeature Print-Services, Print-Server, Print-Internet
+Remove-WindowsFeature Web-Ftp-Server
+
+# Active Directory: Benutzer anlegen
+Import-Module ActiveDirectory
+
+Get-Help New-ADUser
+$pwd = ConvertTo-SecureString -String "Start1234" -AsPlainText -Force
+New-ADUser -Name "Hicham Cherraj" `
+           -SamAccountName "hicham" `
+           -Path "ou=IT,dc=beispielag,dc=local" `
+           -Enabled $true `
+           -AccountPassword $pwd
+
+# Active Directory: Benutzer verwalten
+Import-Module ActiveDirectory
+Get-ADUser -Identity hicham
+Get-ADUser -Identity hicham | Select-Object *
+Get-ADUser -Identity hicham -Properties *
+Get-ADUser -Filter { City -eq "Wien" }
+Get-ADUser -Filter { City -eq "Wien" } | Set-ADUser -City "Graz"
+Get-ADUser -Filter { City -eq "Graz" } | RemoveADUser
+Get-ADUser -Filter { City -eq "Graz" } | RemoveADUser -Confirm:$false
+
+# Active Directory: Gruppen anlegen und verwalten 
+Import-Module ActiveDirectory
+New-ADGroup -Name "IT-Abteilung" -GroupScope Global -Path "ou=IT,dc=beispielag,dc=local"
+$user = Get-ADUser -Filter { Department -eq "IT" }
+Add-ADGroupMember -Identity "IT-Abteilung" -Members $user
+Get-ADGroupMember -Identity "IT-Abteilung"
+
+# Active Directory: Navigationsparadigma
+Import-Module ActiveDirectory
+cd ad:
+dir
+cd "dc=beispielag,dc=local"
+md "ou=Entwicklung"
+
+# Hyper-V-VMs anlegen und verwalten
+Import-Module Hyper-V
+New-VM -Name VM -MemoryStartupBytes 1GB -SwitchName External -NewVHDPath VHD.vhdx -NewVHDSizeBytes 10GB
+Start-VM -Name VM
+Save-VM -Name VM
+Checkpoint-VM -Name VM -SnapshotName Snap
+Get-VMSnapshot -VMName VM
+Remove-VM -Name VM
+
+# Grundlagen DSC
+
+# DSC-Konfiguration
+configuration IISWebsite
+{
+    node localhost
+    {
+        WindowsFeature IIS
+        {
+            Ensure = "Present"
+            Name = "Web-Server"
+        }
+        File WebSiteFiles
+        {
+            Ensure = "Persent"
+            Type = "Directory"
+            SourcePath = "C:\Quelle"
+            DestinationPath = "C:\inetpub\wwwroot"
+            Recurse = $true
+        }
+    }
+}
+
+IISWebsite -OutputPath C:\IISWebsite
+Start-DscConfiguration -Path C:\iiswebsite -wait -Verbose
+
+# Erweiterte Techniken
+
+# Reaktion auf bestimmte Ereignisse
+$action = { Write-Host "Notepad gestartet" }
+$query = "Select * from Win32_ProcessStrartTrace where ProcessName='notepad'"
+$job = Register-WmiEvent -Action $action -Query $query
+$job
+Stop-Job $job
+Remove-Job $job
+
+# Aufgaben im Hinterground ausführen
+$job = Start-Job -ScriptBlock { Get-EventLog -LogName System }
+Get-Job 
+Wait-Job -Job $job
+Receive-Job -Job $job
+
+# Aufgaben zeitlich planen
+Import-Module PSScheduledJob
+$trigger = New-JobTrigger -Daily -At "10:00 AM"
+$option = New-ScheduledJobOption -RunElevated -RequireNetwork
+Register-ScheduledJob -Name "PSHelpUpdate" -ScriptBlock { Update-Help * -Force } -Trigger $trigger -ScheduledJobOption $option
+
+# Windows Management Instrumentation
+Get-CimInstance -ClassName "win32_Service"
+Get-CimInstance -ClassName "win32_LogicalDisk"
+Get-CimInstance -ClassName "win32_LogicalDisk" | Where-Object { $_.DeviceID -eq "C:" }
+Get-CimInstance -ClassName "win32_LogicalDisk" -Filter "DeviceID='C:'"
+Get-CimInstance -Query "Select * from Win32_LogicalDisk where DeviceID='C:'"
+Get-CimInstance -Query "Select * from Win32_LogicalDisk where DeviceID='C:'" | Set-CimInstance -Property @{ VolumeName = "Boot" }
