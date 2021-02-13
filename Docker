@@ -80,6 +80,8 @@ docker volume ls
 docker inspect mysql
 
 --[ Exec (in Container) ]-----------------------------------------------------
+docker exec -it mysql bash -l
+
 docker exec -it nginx bin/bash
 cd usr/share/nginx/html
 echo "Hello from our docker Course" > index.html
