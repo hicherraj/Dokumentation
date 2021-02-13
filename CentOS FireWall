@@ -4,8 +4,8 @@ sudo Systemctl Enable firawalld
 sudo Systemctl Diseable firawalld
 
 sudo systemctl status firewalld
-sudo Systemctl start firawalld
-sudo Systemctl stop firawalld
+sudo Systemctl start firewalld
+sudo Systemctl stop firewalld
 
 sudo systemctl is-active firewalld
 sudo systemctl is-enabled-enabled firewalld
