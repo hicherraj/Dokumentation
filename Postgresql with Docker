@@ -1,5 +1,6 @@
+# Version I
 # Create a Postgres docker container:
-docker run --name demo -d -p 5432::5432 -e POSTGRES_PASSWORD=password postgres
+docker run --name demo -d -p 5432:5432 -e POSTGRES_PASSWORD=password postgres
 
 # Connect and run some queries:
 docker exec -it demo psql -U postgres
@@ -18,3 +19,18 @@ docker rm -f postgesql
 docker run --name demo -v "$PWD"/:/opt/demo/ -e POSTGRES_PASSWORD=password -d postgres
 docker exec -it demo psql -U postgrea -c "CREATE DATABASE demo_db;"
 docker exec -it demo psql -U postgrea -f /opt/demo"script_demo.sql
+
+---------------------------------------------------------------------------------------
+
+# Version II
+# Create a Postgres docker container:
+docker run -p 5432:5432 -d \
+    -e POSTGRES_PASSWORD=postgres \
+    -e POSTGRES_USER=postgres \
+    -e POSTGRES_DB=stripe-example \
+    -v pgdata:/var/lib/postgresql/data \
+    postgres
+
+psql stripe-example -h localhost -U postgres
+
+docker exec -it bdca2b8c09b7 psql -U postgres stripe-example
