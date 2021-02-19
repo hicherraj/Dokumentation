@@ -12,5 +12,7 @@ sudo systemctl is-enabled-enabled firewalld
 
 Open Port
 --------------------------------------------------
+firewall-cmd --list-all
+firewall-cmd --get-services
 firewall-cmd --zone=public --permanent --add-port=8080/tcp
 firewall-cmd --reload
